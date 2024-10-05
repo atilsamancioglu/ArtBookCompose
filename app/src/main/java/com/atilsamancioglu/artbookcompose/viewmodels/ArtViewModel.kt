@@ -31,6 +31,12 @@ class ArtViewModel(application: Application) : AndroidViewModel(application) {
         return artDao.getArtById(id=id)
     }
 
+    suspend fun saveArt(art: Art) {
+        viewModelScope.launch {
+            artDao.insert(art)
+        }
+    }
+
         private fun loadArts() {
             viewModelScope.launch {
                 val result = getArtList()

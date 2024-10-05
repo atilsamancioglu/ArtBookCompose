@@ -16,9 +16,9 @@ interface ArtDao {
     suspend fun getArtById(id: Int): Art?
 
     @Insert
-    fun insert(art: Art)
+    suspend fun insert(art: Art)
 
     @Delete
-    fun delete(art: Art)
+    suspend fun delete(art: Art)
 
 }

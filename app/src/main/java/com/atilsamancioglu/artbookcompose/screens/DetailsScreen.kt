@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,8 +66,6 @@ fun DetailScreen(
                 BitmapFactory.decodeByteArray(imageData, 0, imageData.size)?.asImageBitmap()
             }
 
-            ImagePicker()
-
             Image(
                 bitmap = imageBitmap ?: ImageBitmap.imageResource(id = R.drawable.selectimage),
                 contentDescription = art?.artName ?: "Select an image",
@@ -85,71 +84,21 @@ fun DetailScreen(
 
             )
 
-        }
-    }
-    }
+            Text(
+                text = art?.year ?: "",
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier.padding(2.dp),
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                textAlign = TextAlign.Center
 
-@Composable
-fun ImagePicker() {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    val context = LocalContext.current
-
-    // Determine the permission based on the Android version
-    val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        Manifest.permission.READ_MEDIA_IMAGES
-    } else {
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    }
-
-    // Launchers for gallery intent and permission request
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        selectedImageUri = uri
-    }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            galleryLauncher.launch("image/*") // Open gallery if permission is granted
-        } else {
-            Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Display selected image if available, otherwise show default image
-        selectedImageUri?.let {
-            Image(
-                painter = rememberAsyncImagePainter(it),
-                contentDescription = "Selected Image",
-                modifier = Modifier
-                    .size(300.dp, 200.dp)
-                    .padding(16.dp)
             )
-        } ?: Image(
-            painter = painterResource(id = R.drawable.selectimage),
-            contentDescription = "Select an image",
-            modifier = Modifier
-                .size(300.dp, 200.dp)
-                .padding(16.dp)
-                .clickable {
-                    // Check if permission is already granted, else request permission
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            permission
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        galleryLauncher.launch("image/*") // Launch gallery if permission already granted
-                    } else {
-                        permissionLauncher.launch(permission) // Request permission
-                    }
-                }
-        )
+
+            Button(onClick = { /*TODO*/ }) {
+                Text(text = "Delete")
+            }
+
+        }
     }
-}
+    }
+

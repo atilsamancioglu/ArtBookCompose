@@ -32,7 +32,7 @@ fun ArtList(arts: List<Art>, navController: NavController) {
     floatingActionButton = {
         FAB {
         navController.navigate(
-            "details_screen/-1"
+            "add_art_screen"
         )
     }
     }, content = { padding->
@@ -66,10 +66,7 @@ fun ArtRow(art: Art,navController: NavController) {
             modifier = Modifier.padding(2.dp),
             fontWeight = FontWeight.Bold
         )
-        Text(text = art.year.toString(),
-            //color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.padding(2.dp))
+
     }
 }
 

@@ -26,6 +26,7 @@ import androidx.room.Room
 import com.atilsamancioglu.artbookcompose.model.Art
 import com.atilsamancioglu.artbookcompose.roomdb.ArtDao
 import com.atilsamancioglu.artbookcompose.roomdb.ArtDatabase
+import com.atilsamancioglu.artbookcompose.screens.AddArtScreen
 import com.atilsamancioglu.artbookcompose.screens.ArtList
 import com.atilsamancioglu.artbookcompose.screens.DetailScreen
 import com.atilsamancioglu.artbookcompose.ui.theme.ArtBookComposeTheme
@@ -35,12 +36,10 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val viewModel: ArtViewModel by viewModels<ArtViewModel>()
-    private var artList = listOf<Art>()
 
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
-    artList = viewModel.artList.value
     setContent {
         val navController = rememberNavController()
         ArtBookComposeTheme {
@@ -54,9 +53,31 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         startDestination = "list_screen"
                     ) {
                         composable("list_screen") {
+                            val artList = produceState<List<Art>>(
+                                initialValue = emptyList<Art>()
+                                )
+                             {
+                                value = viewModel.getArtList()
+                            }.value
 
                             ArtList(arts = artList, navController = navController)
                         }
+
+                        composable("add_art_screen") {
+                            val coroutineScope = rememberCoroutineScope()  // Create a coroutine scope
+
+                            AddArtScreen(saveFunction = { art ->
+                                coroutineScope.launch {
+                                    viewModel.saveArt(art)  // Call the suspend function within a coroutine
+                                    navController.navigate(
+                                        "list_screen"
+                                    )
+                                }
+
+                            })
+
+                        }
+
                         composable(
                             "details_screen/{artId}",
                             arguments = listOf(
