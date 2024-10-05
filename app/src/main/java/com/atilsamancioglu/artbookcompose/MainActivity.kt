@@ -9,28 +9,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.room.Room
 import com.atilsamancioglu.artbookcompose.model.Art
-import com.atilsamancioglu.artbookcompose.roomdb.ArtDao
-import com.atilsamancioglu.artbookcompose.roomdb.ArtDatabase
 import com.atilsamancioglu.artbookcompose.screens.AddArtScreen
 import com.atilsamancioglu.artbookcompose.screens.ArtList
 import com.atilsamancioglu.artbookcompose.screens.DetailScreen
 import com.atilsamancioglu.artbookcompose.ui.theme.ArtBookComposeTheme
-import com.atilsamancioglu.artbookcompose.viewmodels.ArtViewModel
+import com.atilsamancioglu.artbookcompose.viewmodel.ArtViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -99,9 +92,20 @@ override fun onCreate(savedInstanceState: Bundle?) {
                             ) {
                                 value = viewModel.getArt(artIdString?.toIntOrNull() ?: 1)
                             }.value
+                            val coroutineScope = rememberCoroutineScope()  // Create a coroutine scope
 
                             DetailScreen(
-                                art = chosenArt
+                                art = chosenArt,
+                               deleteFunction = {
+                                    coroutineScope.launch {
+                                        chosenArt?.let {
+                                            viewModel.deleteArt(it)
+                                        }
+                                        navController.navigate(
+                                            "list_screen"
+                                        )
+                                    }
+                               }
                             )
 
                         }

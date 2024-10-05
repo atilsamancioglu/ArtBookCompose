@@ -45,7 +45,9 @@ import com.atilsamancioglu.artbookcompose.model.Art
 
 @Composable
 fun DetailScreen(
-    art: Art?) {
+    art: Art?,
+    deleteFunction : () -> Unit
+    ) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color = MaterialTheme.colorScheme.primaryContainer),
@@ -94,7 +96,9 @@ fun DetailScreen(
 
             )
 
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {
+                deleteFunction()
+            }) {
                 Text(text = "Delete")
             }
 
