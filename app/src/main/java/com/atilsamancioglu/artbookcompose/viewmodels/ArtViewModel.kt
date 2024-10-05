@@ -27,7 +27,7 @@ class ArtViewModel(application: Application) : AndroidViewModel(application) {
         return artDao.getArtWithNameAndId()
     }
 
-    suspend fun getArt(id: Int): Art {
+    suspend fun getArt(id: Int): Art? {
         return artDao.getArtById(id=id)
     }
 

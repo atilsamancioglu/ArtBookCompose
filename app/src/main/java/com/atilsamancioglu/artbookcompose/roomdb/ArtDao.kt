@@ -13,7 +13,7 @@ interface ArtDao {
     suspend fun getArtWithNameAndId(): List<Art>
 
     @Query("SELECT * FROM Art WHERE id = :id")
-    suspend fun getArtById(id: Int): Art
+    suspend fun getArtById(id: Int): Art?
 
     @Insert
     fun insert(art: Art)

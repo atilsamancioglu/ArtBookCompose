@@ -9,7 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,13 +26,27 @@ import com.atilsamancioglu.artbookcompose.model.Art
 
 @Composable
 fun ArtList(arts: List<Art>, navController: NavController) {
-    LazyColumn(contentPadding = PaddingValues(5.dp),
-        modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.primaryContainer))
+    Scaffold(topBar = { },
+        floatingActionButtonPosition = FabPosition.End
+        ,
+    floatingActionButton = {
+        FAB {
+        navController.navigate(
+            "details_screen/-1"
+        )
+    }
+    }, content = { padding->
+        LazyColumn(contentPadding = padding,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.primaryContainer))
     {
         items(arts) {
             ArtRow(art = it, navController=navController)
         }
     }
+    })
+
 }
 
 @Composable
@@ -50,5 +70,14 @@ fun ArtRow(art: Art,navController: NavController) {
             //color = MaterialTheme.colorScheme.surfaceContainerHigh,
             style = MaterialTheme.typography.displaySmall,
             modifier = Modifier.padding(2.dp))
+    }
+}
+
+@Composable
+fun FAB(onClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onClick() },
+    ) {
+        Icon(Icons.Filled.Add, "Floating action button.")
     }
 }

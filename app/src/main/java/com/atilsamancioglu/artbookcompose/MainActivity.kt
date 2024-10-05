@@ -69,7 +69,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                                 it.arguments?.getString("artId")
                             }
 
-                            val chosenArt = produceState<Art>(
+                            val chosenArt = produceState<Art?>(
                                 initialValue = Art(
                                     "", "", "", ByteArray(
                                         1
