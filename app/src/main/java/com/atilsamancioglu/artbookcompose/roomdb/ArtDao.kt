@@ -10,10 +10,10 @@ import com.atilsamancioglu.artbookcompose.model.Art
 interface ArtDao {
 
     @Query("SELECT name,id FROM Art")
-    suspend fun getArtWithNameAndId(): List<Art>
+    fun getArtWithNameAndId(): List<Art>
 
     @Query("SELECT * FROM Art WHERE id = :id")
-    suspend fun getArtById(id: Int): Art?
+    fun getArtById(id: Int): Art?
 
     @Insert
     suspend fun insert(art: Art)

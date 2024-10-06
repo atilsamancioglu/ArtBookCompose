@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,12 +47,11 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         startDestination = "list_screen"
                     ) {
                         composable("list_screen") {
-                            val artList = produceState<List<Art>>(
-                                initialValue = emptyList<Art>()
-                                )
-                             {
-                                value = viewModel.getArtList()
-                            }.value
+
+                            viewModel.getArtList()
+                            val artList by remember {
+                                viewModel.artList
+                            }
 
                             ArtList(arts = artList, navController = navController)
                         }
@@ -82,7 +82,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                             val artIdString = remember {
                                 it.arguments?.getString("artId")
                             }
-
+                            /*
                             val chosenArt = produceState<Art?>(
                                 initialValue = Art(
                                     "", "", "", ByteArray(
@@ -92,15 +92,23 @@ override fun onCreate(savedInstanceState: Bundle?) {
                             ) {
                                 value = viewModel.getArt(artIdString?.toIntOrNull() ?: 1)
                             }.value
+
+                             */
+
+                            viewModel.getArt(artIdString?.toIntOrNull() ?: 1)
+                            val selectedArt by remember {
+                                viewModel.selectedArt
+                            }
                             val coroutineScope = rememberCoroutineScope()  // Create a coroutine scope
 
+
                             DetailScreen(
-                                art = chosenArt,
+                                art = selectedArt,
                                deleteFunction = {
                                     coroutineScope.launch {
-                                        chosenArt?.let {
-                                            viewModel.deleteArt(it)
-                                        }
+
+                                        viewModel.deleteArt(selectedArt)
+
                                         navController.navigate(
                                             "list_screen"
                                         )
