@@ -57,16 +57,12 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         }
 
                         composable("add_art_screen") {
-                            val coroutineScope = rememberCoroutineScope()  // Create a coroutine scope
 
                             AddArtScreen(saveFunction = { art ->
-                                coroutineScope.launch {
-                                    viewModel.saveArt(art)  // Call the suspend function within a coroutine
-                                    navController.navigate(
-                                        "list_screen"
-                                    )
-                                }
-
+                                viewModel.saveArt(art)  // Call the suspend function within a coroutine
+                                navController.navigate(
+                                    "list_screen"
+                                )
                             })
 
                         }
@@ -99,27 +95,22 @@ override fun onCreate(savedInstanceState: Bundle?) {
                             val selectedArt by remember {
                                 viewModel.selectedArt
                             }
-                            val coroutineScope = rememberCoroutineScope()  // Create a coroutine scope
-
 
                             DetailScreen(
                                 art = selectedArt,
                                deleteFunction = {
-                                    coroutineScope.launch {
 
-                                        viewModel.deleteArt(selectedArt)
+                                   viewModel.deleteArt(selectedArt)
 
-                                        navController.navigate(
-                                            "list_screen"
-                                        )
-                                    }
+                                   navController.navigate(
+                                       "list_screen"
+                                   )
+
                                }
                             )
 
                         }
                     }
-
-
                 }
             }
         }

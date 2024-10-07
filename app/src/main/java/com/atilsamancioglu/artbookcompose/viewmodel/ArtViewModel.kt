@@ -42,13 +42,13 @@ class ArtViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun saveArt(art: Art) {
+    fun saveArt(art: Art) {
         viewModelScope.launch(Dispatchers.IO) {
             artDao.insert(art)
         }
     }
 
-    suspend fun deleteArt(art: Art) {
+    fun deleteArt(art: Art) {
         viewModelScope.launch(Dispatchers.IO) {
             artDao.delete(art)
         }
