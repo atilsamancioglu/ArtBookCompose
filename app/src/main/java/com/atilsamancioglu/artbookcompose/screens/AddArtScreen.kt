@@ -3,6 +3,7 @@ package com.atilsamancioglu.artbookcompose.screens
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -44,6 +45,7 @@ import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
 import com.atilsamancioglu.artbookcompose.R
 import com.atilsamancioglu.artbookcompose.model.Art
+import java.io.ByteArrayOutputStream
 
 @Composable
 fun AddArtScreen(saveFunction: (art: Art) -> Unit) {
@@ -113,7 +115,9 @@ fun AddArtScreen(saveFunction: (art: Art) -> Unit) {
                 Button(onClick = {
 
                     // Convert the selected URI into a ByteArray if it's not null
-                    val imageByteArray = selectedImageUri?.let { uriToByteArray(context, it) } ?: ByteArray(0)
+                    val imageByteArray = selectedImageUri?.let {
+                        resizeImage(context, it, maxWidth = 600, maxHeight = 400)  // Set the desired max width and height
+                    } ?: ByteArray(0)
 
                     val artToInsert = Art(artName = artName.value,
                         artistName = artistName.value,
@@ -201,6 +205,37 @@ fun uriToByteArray(context: Context, uri: Uri): ByteArray? {
     return try {
         val inputStream = context.contentResolver.openInputStream(uri)
         inputStream?.readBytes() // Convert to ByteArray
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun resizeImage(context: Context, uri: Uri, maxWidth: Int, maxHeight: Int): ByteArray? {
+    return try {
+        // Open InputStream from the URI
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
+
+        // Calculate aspect ratio
+        val aspectRatio = originalBitmap.width.toFloat() / originalBitmap.height.toFloat()
+
+        // Calculate new dimensions while maintaining aspect ratio
+        var width = maxWidth
+        var height = (width / aspectRatio).toInt()
+
+        if (height > maxHeight) {
+            height = maxHeight
+            width = (height * aspectRatio).toInt()
+        }
+
+        // Resize the bitmap
+        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, false)
+
+        // Convert the resized bitmap to a ByteArray
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        byteArrayOutputStream.toByteArray()
     } catch (e: Exception) {
         e.printStackTrace()
         null
